@@ -71,9 +71,13 @@ pipeline {
       post {
         failure {
             echo 'Docker image push failure'
+            sh "docker image rm -f ${dockerHubRegistry}:${currentBuild.number}"
+            sh "docker image rm -f ${dockerHubRegistry}:latest"
         }
         success {
             echo 'Docker image push success'
+            sh "docker image rm -f ${dockerHubRegistry}:${currentBuild.number}"
+            sh "docker image rm -f ${dockerHubRegistry}:latest"
         }
      }
     }
@@ -86,9 +90,11 @@ pipeline {
         post {
             failure {
                 echo 'docker container deploy failure'
+                slackSend (color: '#FF0000', message: "FAILURE: docker container deployment '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
             }
             success {
                 echo 'docker container deploy success'
+                slackSend (color: '#0000FF', message: "SUCCESS: docker container deployment '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
             }
         }
     }
