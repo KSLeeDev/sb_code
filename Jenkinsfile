@@ -68,14 +68,14 @@ pipeline {
             sh "docker push ${dockerHubRegistry}:latest"
           }
         }
-        post {
-            failure {
-                echo 'docker image push failure'
-            }
-            success {
-                echo 'docker image push success'
-            }
+      post {
+        failure {
+            echo 'docker image push failure'
         }
+        success {
+            echo 'docker image push success'
+        }
+    }
     }
   }
 }
